@@ -362,10 +362,10 @@ function resetPlayer() {
   player.dir = DIR.UP;
   player.alive = true;
   player.shootCooldown = 0;
-  // 出生保护：清空周围砖块
+  // 出生保护：清空周围所有障碍物（砖墙、钢墙、水域）
   for (let r = 12; r <= 13; r++)
     for (let c = 8; c <= 10; c++)
-      if (tileAt(c, r) === 1) setTile(c, r, 0);
+      if (tileAt(c, r) === 1 || tileAt(c, r) === 2 || tileAt(c, r) === 3) setTile(c, r, 0);
 }
 
 function nextLevel() {
@@ -388,10 +388,10 @@ function nextLevel() {
   player.dir = DIR.UP;
   player.alive = true;
   player.shootCooldown = 0;
-  // 清空出生点周围
+  // 清空出生点周围所有障碍物
   for (let r = 12; r <= 13; r++)
     for (let c = 8; c <= 10; c++)
-      if (tileAt(c, r) === 1) setTile(c, r, 0);
+      if (tileAt(c, r) === 1 || tileAt(c, r) === 2 || tileAt(c, r) === 3) setTile(c, r, 0);
   showLevelText = 120;
 }
 
