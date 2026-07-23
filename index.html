@@ -446,10 +446,10 @@ function updateEnemyAI(enemy) {
 }
 
 // ==================== 更新逻辑 ====================
-let debugInfo = '';
+let debugInfo = '等待开始...';
 function update() {
+  debugInfo = `状态:${gameState} 位置:(${Math.round(player?.cx||0)},${Math.round(player?.cy||0)}) 键:${keys['ArrowUp']?'↑':''}${keys['ArrowDown']?'↓':''}${keys['ArrowLeft']?'←':''}${keys['ArrowRight']?'→':''}`;
   if (gameState !== 'playing') return;
-  debugInfo = `状态:${gameState} 位置:(${Math.round(player.cx)},${Math.round(player.cy)}) 朝向:${player.dir} 键:${keys['ArrowUp']?'↑':''}${keys['ArrowDown']?'↓':''}${keys['ArrowLeft']?'←':''}${keys['ArrowRight']?'→':''}`;
 
   // 关卡文字计时器
   if (showLevelText > 0) showLevelText--;
@@ -840,15 +840,13 @@ function render() {
   // HUD（不受震动影响）
   drawHUD();
 
-  // 调试信息
-  if (debugInfo) {
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(0, GH-22, GW, 22);
-    ctx.fillStyle = '#0f0';
-    ctx.font = '11px "Courier New"';
-    ctx.textAlign = 'left';
-    ctx.fillText(debugInfo, 8, GH-7);
-  }
+  // 调试信息（始终显示）
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.fillRect(0, GH-22, GW, 22);
+  ctx.fillStyle = '#0f0';
+  ctx.font = '11px "Courier New"';
+  ctx.textAlign = 'left';
+  ctx.fillText(debugInfo, 8, GH-7);
 
   // 关卡提示文字
   if (showLevelText > 0) {
