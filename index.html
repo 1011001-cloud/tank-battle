@@ -180,7 +180,7 @@ function sfxStart()  { playBeep(330,0.1,'square',0.05); setTimeout(()=>playBeep(
 
 // --- 游戏状态 ---
 let map, player, enemies, bullets, particles;
-let score, lives, level, enemiesRemaining, enemySpawnTimer, enemySpawnCount;
+let score, lives, level, totalEnemies, enemiesRemaining, enemySpawnTimer, enemySpawnCount;
 let gameState = 'start'; // start | playing | paused | gameover | victory
 let keys = {};
 let lastTime = 0, accumulator = 0;
@@ -351,7 +351,8 @@ function resetGame() {
   score = 0;
   lives = 3;
   level = 1;
-  enemiesRemaining = 8;
+  totalEnemies = 8;
+  enemiesRemaining = totalEnemies;
   enemySpawnTimer = 0;
   enemySpawnCount = 0;
   gameState = 'playing';
@@ -374,7 +375,8 @@ function resetPlayer() {
 
 function nextLevel() {
   level++;
-  enemiesRemaining = 6 + level * 2;
+  totalEnemies = 6 + level * 2;
+  enemiesRemaining = totalEnemies;
   enemySpawnCount = 0;
   enemySpawnTimer = 0;
   enemies = [];
@@ -554,10 +556,9 @@ function update() {
     if (hitEnemy) {
       bullets.splice(i, 1);
       // 移除死亡敌人
-      enemies = enemies.filter(e => e.alive || e === hitEnemy);
       enemies = enemies.filter(e => e.alive);
-      // 检查胜利
-      if (enemiesRemaining <= 0 && enemies.length === 0) {
+      // 检查胜利：所有敌人已生成且全部被消灭
+      if (enemySpawnCount >= totalEnemies && enemies.length === 0) {
         setTimeout(() => nextLevel(), 1500);
       }
     }
@@ -572,8 +573,8 @@ function update() {
     if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // 敌人生成
-  if (enemySpawnCount < enemiesRemaining + 3 && enemies.length < 4) {
+  // 敌人生成（最多同时存在4个，总生成数不超过totalEnemies）
+  if (enemySpawnCount < totalEnemies && enemies.length < 4) {
     enemySpawnTimer++;
     if (enemySpawnTimer > 80) {
       enemySpawnTimer = 0;
@@ -750,7 +751,7 @@ function drawHUD() {
   ctx.fillText('👾 剩余敌人', GW + HUD_W/2, 205);
   ctx.fillStyle = '#f44';
   ctx.font = 'bold 18px "Courier New"';
-  ctx.fillText(String(enemiesRemaining + Math.max(0, enemySpawnCount - enemies.filter(e=>e.alive).length)), GW + HUD_W/2, 230);
+  ctx.fillText(String(enemies.filter(e => e.alive).length + (totalEnemies - enemySpawnCount)), GW + HUD_W/2, 230);
 
   // 操作提示
   ctx.fillStyle = '#666';
